@@ -8,16 +8,17 @@
 int sort_bubble_team(int* ptr_array, int* Team);
 
 int mass(int* L);
-int rate(int* L, int** A, int* Wins, int* Team, int* Place);
+int rate(int* Wins, int* Team, int* Place, int* Non, int* Score);
 
-int search_max(int* L, int** A, int* Wins, int* Team, int* Place);
-int search_min(int* L, int** A, int* Wins, int* Team, int* Place);
+int search_max(int* Score);
+int search_min(int* Score);
 
 int change_score_y(int y);
 int change_score_x(int x);
 
-void var(int* L, int** A, int* Wins, int* Score, int* Place, int* Team);
 int place(int* Place, int* Score);
+
+
 
 void main()
 {
@@ -95,7 +96,7 @@ void main()
 			break;
 		case 2:
 			system("cls");
-			rate(L, A, Wins, Team, Place, Non, Score);
+			rate( Wins, Team, Place, Non, Score);
 			printf("\n\n");
 			break;
 		case 3:
@@ -260,7 +261,7 @@ int mass(int* L)
 	}
 }
 
-int rate(int* L, int** A, int* Wins, int* Team, int* Place, int* Non, int* Score) {
+int rate( int* Wins, int* Team, int* Place, int* Non, int* Score) {
 
 	printf("  Место  |   Команда  | Победы  |  Ничья  | Поражения | Набранные очки |\n");
 	for (int i = 0; i < N; i++) {
@@ -268,7 +269,7 @@ int rate(int* L, int** A, int* Wins, int* Team, int* Place, int* Non, int* Score
 	}
 }
 
-int search_max(int* L, int** A, int* Wins, int* Team, int* Place, int* Score) {
+int search_max(int* Score) {
 	int maxc;
 	int max = 0;
 	maxc = Score[0];
@@ -281,7 +282,7 @@ int search_max(int* L, int** A, int* Wins, int* Team, int* Place, int* Score) {
 	return (max);
 }
 
-int search_min(int* L, int** A, int* Wins, int* Team, int* Place, int* Score) {
+int search_min(int* Score) {
 	int minc;
 	int min = 0;
 	minc = Score[0];
@@ -305,53 +306,6 @@ int change_score_x(int x) {
 	printf("Очки команды %i:", x+1);
 	scanf("%i", &n);
 	return n;
-}
-
-void var(int* L, int** A, int* Wins, int* Score, int* Non, int* Team) {
-	for (int i = 0; i < N; i++) {
-		Wins[i] = 0;
-	}
-
-	for (int i = 0; i < N; i++) {
-		Non[i] = 0;
-	}
-
-	for (int i = 0; i < N; i++) {
-		Team[i] = i + 1;
-	}
-
-	for (int i = 0; i < N; i++) {
-		Score[i] = 0;
-	}
-
-	int k = 0;
-	for (int i = 0; i < N; i++) {
-		for (int j = 0; j < N; j++) {
-			if (i < j) {
-				A[i][j] = k;
-				Score[i] = Score[i] + L[A[i][j] * 2];
-				if (L[A[i][j] * 2] > L[((A[i][j] + 1) * 2) - 1]) {
-					Wins[i] = Wins[i] + 1;
-				}
-				if (L[A[i][j] * 2] == L[((A[i][j] + 1) * 2) - 1]) {
-					Non[i] = Non[i] + 1;
-				}
-				k++;
-			}
-			else if (i > j) {
-				Score[i] = Score[i] + L[((A[j][i] + 1) * 2) - 1];
-				if (L[((A[j][i] + 1) * 2) - 1] > L[A[j][i] * 2])
-				{
-					Wins[i] = Wins[i] + 1;
-				}
-				if (L[((A[j][i] + 1) * 2) - 1] == L[A[j][i] * 2]) {
-					Non[i] = Non[i] + 1;
-				}
-			}
-
-		}
-	}
-
 }
 
 int place(int* Place, int* Score) {
