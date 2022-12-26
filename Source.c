@@ -6,15 +6,22 @@
 #define N 5
 
 int sort_bubble_team(int* ptr_array, int* Team);
+
 int mass(int* L);
 int rate(int* L, int** A, int* Wins, int* Team, int* Place);
+
 int search_max(int* L, int** A, int* Wins, int* Team, int* Place);
 int search_min(int* L, int** A, int* Wins, int* Team, int* Place);
-int search_above(int* L, int** A, int* Wins, int* Team, int* Place);
-int search_below(int* L, int** A, int* Wins, int* Team, int* Place);
+
+int change_score_y(int y);
+int change_score_x(int x);
+
+void var(int* L, int** A, int* Wins, int* Score, int* Place, int* Team);
+int place(int* Place, int* Score);
 
 void main()
 {
+	int x = 0, y = 0;
 	int max = 0, min = 0;
 	int i = 0;
 	int Score[N];
@@ -30,7 +37,6 @@ void main()
 		i++;
 	}
 
-	int k = 0;
 	for (int i = 0; i < N; i++) {
 		Wins[i] = 0;
 	}
@@ -47,6 +53,7 @@ void main()
 		Score[i] = 0;
 	}
 
+	int k = 0;
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
 			if (i < j) {
@@ -66,30 +73,19 @@ void main()
 				{
 					Wins[i] = Wins[i] + 1;
 				}
-				 if (L[((A[j][i] + 1) * 2) - 1] == L[A[j][i] * 2]) {
+				if (L[((A[j][i] + 1) * 2) - 1] == L[A[j][i] * 2]) {
 					Non[i] = Non[i] + 1;
 				}
 			}
-
 		}
 	}
+	//var(L, A, Wins, Score, Non, Team);
 	sort_bubble_team(Wins, Team, Non, Score);
-	Place[0] = 1;
-	for (int i = 1; i < N; i++) {
-		if (Wins[i - 1] == Wins[i]) {
-			Place[i] = Place[i - 1];
-		}
-		else {
-			Place[i] = Place[i - 1] + 1;
-		}
-	}
+	place(Place, Score);
 	
-
-	
-	
-	int a;
+	int a, b;
 	while (1) {
-		printf("Кёрлинг\n\nВыберете функцию:\n1)Таблица счёта\n2)Рейтинговая таблица\n3)Поиск лучшей команды\n4)Поиск худшей команды\n5)Команды с победами выше x\n6)Команды с победами ниже x\n");
+		printf("Кёрлинг\n\nВыберете функцию:\n1)Таблица счёта\n2)Рейтинговая таблица\n3)Поиск команды\n4)Изменение ячейки\n");
 		scanf("%d", &a);
 		switch (a) {
 		case 1:
@@ -104,23 +100,93 @@ void main()
 			break;
 		case 3:
 			system("cls");
-			max = search_max(L, A, Wins, Team, Place, Score);
-			printf("Лучший счёт:\nКоманда %i (Счёт: %i)\n\n", Team[max], Score[max]);
+
+			printf("1)Поиск лучшей команды\n2)Поиск худшей команды\n");
+			scanf("%i", &b);
+			switch (b) {
+			case 1:
+				system("cls");
+				max = search_max(L, A, Wins, Team, Place, Score);
+				printf("Лучший счёт:\nКоманда %i (Счёт: %i)\n\n", Team[max], Score[max]);
+				break;
+			case 2:
+				system("cls");
+				min = search_min(L, A, Wins, Team, Place, Score);
+				printf("Худший счёт:\nКоманда %i (Счёт: %i)\n\n", Team[min], Score[min]);
+				break;
+			default:
+				printf("Введён некорректный номер функции!\n\n");
+				break;
+			}
 			break;
 		case 4:
 			system("cls");
-			min = search_min(L, A, Wins, Team, Place, Score);
-			printf("Худший счёт:\nКоманда %i (Счёт: %i)\n\n", Team[min], Score[min]);
+			printf("Ось x ячейки:");
+			scanf("%i", &x);
+			x--;
+			printf("Ось y ячейки:");
+			scanf("%i", &y);
+			y--;
+			printf("Новое значение ячейки Команда %i VS Команда %i\n", y+1, x+1);
+			if (y < x) {
+				L[A[y][x] * 2] = change_score_y(y);
+				L[((A[y][x] + 1) * 2) - 1] = change_score_x(x);
+			}
+			else if (y > x) {
+			    L[((A[x][y] + 1) * 2) - 1] =  change_score_y(y);
+				L[A[x][y] * 2] = change_score_x(x);
+			}
+
+
+			for (int i = 0; i < N; i++) {
+				Wins[i] = 0;
+			}
+
+			for (int i = 0; i < N; i++) {
+				Non[i] = 0;
+			}
+
+			for (int i = 0; i < N; i++) {
+				Team[i] = i + 1;
+			}
+
+			for (int i = 0; i < N; i++) {
+				Score[i] = 0;
+			}
+
+			int k = 0;
+			for (int i = 0; i < N; i++) {
+				for (int j = 0; j < N; j++) {
+					if (i < j) {
+						A[i][j] = k;
+						Score[i] = Score[i] + L[A[i][j] * 2];
+						if (L[A[i][j] * 2] > L[((A[i][j] + 1) * 2) - 1]) {
+							Wins[i] = Wins[i] + 1;
+						}
+						if (L[A[i][j] * 2] == L[((A[i][j] + 1) * 2) - 1]) {
+							Non[i] = Non[i] + 1;
+						}
+						k++;
+					}
+					else if (i > j) {
+						Score[i] = Score[i] + L[((A[j][i] + 1) * 2) - 1];
+						if (L[((A[j][i] + 1) * 2) - 1] > L[A[j][i] * 2])
+						{
+							Wins[i] = Wins[i] + 1;
+						}
+						if (L[((A[j][i] + 1) * 2) - 1] == L[A[j][i] * 2]) {
+							Non[i] = Non[i] + 1;
+						}
+					}
+				}
+			}
+
+			sort_bubble_team(Wins, Team, Non, Score);
+			place(Place, Score);
+
 			break;
-		case 5:
-			system("cls");
-			search_above(L, A, Wins, Team, Place);
-			printf("\n\n");
-			break;
-		case 6:
-			system("cls");
-			search_below(L, A, Wins, Team, Place);
-			printf("\n\n");
+		default:
+			printf("Введён некорректный номер функции!\n\n");
 			break;
 		}
 	}
@@ -227,29 +293,75 @@ int search_min(int* L, int** A, int* Wins, int* Team, int* Place, int* Score) {
 	}
 	return (min);
 }
-
-int search_above(int* L, int** A, int* Wins, int* Team, int* Place) {
-	int flag;
-	printf("Введите x:");
-	scanf("%i", &flag);
-	printf("Команды с количеством побед большим или равным %i:\n", flag);
-	for (int i = 0; i < N; i++) {
-		if (Wins[i] >= flag) {
-			printf("Команада %i (Победы: %i)\n", Team[i], Wins[i]);
-		}
-	}
-	return 0;
+int change_score_y(int y) {
+	int n;
+	printf("Очки команды %i:", y+1);
+	scanf("%i", &n);
+	return n;
 }
 
-int search_below(int* L, int** A, int* Wins, int* Team, int* Place) {
-	int flag;
-	printf("Введите x:");
-	scanf("%i", &flag);
-	printf("Команды с количеством побед меньше или равным %i:\n", flag);
+int change_score_x(int x) {
+	int n;
+	printf("Очки команды %i:", x+1);
+	scanf("%i", &n);
+	return n;
+}
+
+void var(int* L, int** A, int* Wins, int* Score, int* Non, int* Team) {
 	for (int i = 0; i < N; i++) {
-		if (Wins[i] <= flag) {
-			printf("Команада %i (Победы: %i)\n", Team[i], Wins[i]);
+		Wins[i] = 0;
+	}
+
+	for (int i = 0; i < N; i++) {
+		Non[i] = 0;
+	}
+
+	for (int i = 0; i < N; i++) {
+		Team[i] = i + 1;
+	}
+
+	for (int i = 0; i < N; i++) {
+		Score[i] = 0;
+	}
+
+	int k = 0;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			if (i < j) {
+				A[i][j] = k;
+				Score[i] = Score[i] + L[A[i][j] * 2];
+				if (L[A[i][j] * 2] > L[((A[i][j] + 1) * 2) - 1]) {
+					Wins[i] = Wins[i] + 1;
+				}
+				if (L[A[i][j] * 2] == L[((A[i][j] + 1) * 2) - 1]) {
+					Non[i] = Non[i] + 1;
+				}
+				k++;
+			}
+			else if (i > j) {
+				Score[i] = Score[i] + L[((A[j][i] + 1) * 2) - 1];
+				if (L[((A[j][i] + 1) * 2) - 1] > L[A[j][i] * 2])
+				{
+					Wins[i] = Wins[i] + 1;
+				}
+				if (L[((A[j][i] + 1) * 2) - 1] == L[A[j][i] * 2]) {
+					Non[i] = Non[i] + 1;
+				}
+			}
+
 		}
 	}
-	return 0;
+
+}
+
+int place(int* Place, int* Score) {
+	Place[0] = 1;
+	for (int i = 1; i < N; i++) {
+		if (Score[i - 1] == Score[i]) {
+			Place[i] = Place[i - 1];
+		}
+		else {
+			Place[i] = Place[i - 1] + 1;
+		}
+	}
 }
