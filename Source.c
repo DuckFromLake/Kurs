@@ -7,7 +7,6 @@
 #include <malloc.h>
 
 #define CATAGORY 5
-//#define TEAM 5
 
 /////////////////// FUNCTION LIST //////////////////////
 
@@ -42,7 +41,7 @@ void main()
 	FILE* file;
 	file = fopen("Kurs.txt", "r");
 
-	printf("Введите количество команд (не более 9):");
+	printf("******************КЁРЛИНГ******************\n\n    Таблица результатов соревнований\n\nВведите количество команд (не более 9):");
 	scanf("%i", &TEAM);
 
 	Var = (int**)malloc(CATAGORY * sizeof(int*));
@@ -295,6 +294,7 @@ void change_game(int** Var, int** A, int* L, int Team) {
 	scanf("%i", &x);
 	printf("Команда по вертикали:");
 	scanf("%i", &y);
+	system("cls");
 	printf("Новое значение ячейки Команда %i VS Команда %i\n", y, x);
 
 	printf("Очки команды %i:", x);
