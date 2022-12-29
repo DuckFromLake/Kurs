@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
@@ -42,14 +43,14 @@ void main()
 	for (int i = 0; i < TEAM; i++)
 		A[i] = (double*)malloc(TEAM * sizeof(double));
 
-	L = (double*)malloc(((((TEAM * TEAM) - TEAM) + 1) / 2) * sizeof(double));
+	L = (double*)malloc((TEAM * TEAM) * sizeof(double));
 
 	read_file(file, L);
 	var_declaration_and_sort(Var, A, L, TEAM);
 
 	while (a != 5) {
-		printf("\n\nВыберете функцию:\n1)Таблица счёта\n2)Рейтинговая таблица\n3)Поиск команды\n4)Изменение ячейки\n5)Данные по команде\n5)Выход\n");
-		scanf("%d", &a);
+		printf("\n\nВыберете функцию:\n1)Таблица счёта\n2)Рейтинговая таблица\n3)Поиск команды\n4)Изменение ячейки\n5)Выход\n");
+		scanf("%i", &a);
 		switch (a) {
 		case 1:
 			system("cls");
@@ -88,8 +89,8 @@ void main()
 			var_declaration_and_sort(Var, A, L, TEAM);
 			break;
 		case 5:
-			fclose(file);
 			printf("\nВыход из программы\n");
+			fclose(file);
 			break;
 		default:
 			printf("Введён некорректный номер функции!\n\n");
@@ -279,4 +280,3 @@ void change_game(int** Var, int** A, int* L, int Team) {
 		}
 	}
 }
-
