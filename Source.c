@@ -3,9 +3,11 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
+#include <malloc.h>
 
 #define CATAGORY 5
-#define TEAM 9
+//#define TEAM 5
 
 /////////////////// FUNCTION LIST //////////////////////
 
@@ -18,7 +20,11 @@ void rate(int** Var, int Team);
 int search_max(int** Var, int Team);
 int search_min(int** Var, int Team);
 
+int score_max(int** Var, int** A, int* L, int Team, int i);
+int score_min(int** Var, int** A, int* L, int Team, int i);
+
 void change_game(int** Var, int** A, int* L, int Team);
+
 
 
 /////////////////// MAIN //////////////////////
@@ -26,7 +32,8 @@ void change_game(int** Var, int** A, int* L, int Team);
 
 void main()
 {
-	int a = 0, b, c, ta, j;
+	int a = -1, b, с,tm,  scr_max = 0, scr_min = 0;
+	int TEAM;
 	int max = 0, min = 0, tmax = 0, tmin = 0;
 	float tav = 0;
 	int** Var;
@@ -35,23 +42,30 @@ void main()
 	FILE* file;
 	file = fopen("Kurs.txt", "r");
 
-	Var = (double**)malloc(CATAGORY * sizeof(double*));
+	printf("Введите количество команд (не более 9):");
+	scanf("%i", &TEAM);
+
+	Var = (int**)malloc(CATAGORY * sizeof(int*));
 	for (int i = 0; i < CATAGORY; i++)
-		Var[i] = (double*)malloc(TEAM * sizeof(double));
+		Var[i] = (int*)malloc(TEAM * sizeof(int));
 
-	A = (double**)malloc(TEAM * sizeof(double*));
+	A = (int**)malloc(TEAM * sizeof(int*));
 	for (int i = 0; i < TEAM; i++)
-		A[i] = (double*)malloc(TEAM * sizeof(double));
+		A[i] = (int*)malloc(TEAM * sizeof(int));
 
-	L = (double*)malloc((TEAM * TEAM) * sizeof(double));
+	L = (int*)malloc((86) * sizeof(int));
 
 	read_file(file, L);
 	var_declaration_and_sort(Var, A, L, TEAM);
 
-	while (a != 5) {
-		printf("\n\nВыберете функцию:\n1)Таблица счёта\n2)Рейтинговая таблица\n3)Поиск команды\n4)Изменение ячейки\n5)Выход\n");
+	while (a != 0) {
+		printf("\n\nВыберете функцию:\n1)Таблица счёта\n2)Рейтинговая таблица\n3)Поиск команды\n4)Поиск результатов\n5)Изменение ячейки\n\n0)Выход\n");
 		scanf("%i", &a);
 		switch (a) {
+		case 0:
+			printf("\nВыход из программы\n");
+			fclose(file);
+			break;
 		case 1:
 			system("cls");
 			arr(A, L, TEAM);
@@ -65,7 +79,7 @@ void main()
 		case 3:
 			system("cls");
 
-			printf("1)Поиск лучшей команды по очкам\n2)Поиск худшей команды по очкам\n");
+			printf("1)Поиск лучшей команды по очкам\n2)Поиск худшей команды по очкам\n\n0)Назад\n");
 			scanf("%i", &b);
 			switch (b) {
 			case 1:
@@ -78,6 +92,9 @@ void main()
 				min = search_min(Var, TEAM);
 				printf("Худший счёт:\nКоманда %i (Счёт: %i)\n\n", Var[4][min], Var[0][min]);
 				break;
+			case 0:
+				system("cls");
+				break;
 			default:
 				printf("Введён некорректный номер функции!\n\n");
 				break;
@@ -85,12 +102,36 @@ void main()
 			break;
 		case 4:
 			system("cls");
-			change_game(Var, A, L, TEAM);
-			var_declaration_and_sort(Var, A, L, TEAM);
+
+			printf("1)Поиск лучшего результата команды\n2)Поиск худшего результата команды\n\n0)Назад\n");
+			scanf("%i", &с);
+			switch (с) {
+			case 1:
+				system("cls");
+				printf("Лучший результат\n\nПоиск по команде номер: ");
+				scanf("%i", &tm);
+				scr_max = score_max(Var, A, L, TEAM, tm-1);
+				printf("Лучший счёт команды %i: %i ", tm, scr_max);
+				break;
+			case 2:
+				system("cls");
+				printf("Худший результат\n\nПоиск по команде номер : ");
+				scanf("%i", &tm);
+				scr_min = score_min(Var, A, L, TEAM, tm-1);
+				printf("Худший счёт команды %i: %i ", tm, scr_min);
+				break;
+			case 0:
+				system("cls");
+				break;
+			default:
+				printf("Введён некорректный номер функции!\n\n");
+				break;
+			}
 			break;
 		case 5:
-			printf("\nВыход из программы\n");
-			fclose(file);
+			system("cls");
+			change_game(Var, A, L, TEAM);
+			var_declaration_and_sort(Var, A, L, TEAM);
 			break;
 		default:
 			printf("Введён некорректный номер функции!\n\n");
@@ -279,4 +320,36 @@ void change_game(int** Var, int** A, int* L, int Team) {
 			Var[i][j] = 0;
 		}
 	}
+}
+
+int score_max(int** Var, int** A, int* L,int Team, int i) {
+	int max = 0;
+	for (int j = 0; j < Team; j++) {
+		if (i < j) {
+			if (max < L[A[i][j] * 2])
+			max = L[A[i][j] * 2];
+
+		}
+		else if (i > j) {
+			if (max < L[((A[j][i] + 1) * 2) - 1])
+			max = L[((A[j][i] + 1) * 2) - 1];
+		}
+	}
+	return max;
+}
+
+int score_min(int** Var, int** A, int* L, int Team, int i) {
+	int min = 10;
+	for (int j = 0; j < Team; j++) {
+		if (i < j) {
+			if (min > L[A[i][j] * 2])
+				min = L[A[i][j] * 2];
+
+		}
+		else if (i > j) {
+			if (min > L[((A[j][i] + 1) * 2) - 1])
+				min = L[((A[j][i] + 1) * 2) - 1];
+		}
+	}
+	return min;
 }
