@@ -11,7 +11,8 @@
 /////////////////// FUNCTION LIST //////////////////////
 
 void read_file(FILE* file, int* L);
-void var_declaration_and_sort(int** Var, int** A, int* L, int Team);
+void var_declaration(int** Var, int** A, int* L, int Team);
+void sort_bubble(int** Var, int Team);
 
 void arr(int** A, int* L, int Team);
 void rate(int** Var, int Team);
@@ -130,7 +131,8 @@ void main()
 		case 5:
 			system("cls");
 			change_game(Var, A, L, TEAM);
-			var_declaration_and_sort(Var, A, L, TEAM);
+			var_declaration(Var, A, L, TEAM);
+			sort_bubble(Var, TEAM);
 			break;
 		default:
 			printf("Введён некорректный номер функции!\n\n");
@@ -151,7 +153,7 @@ void read_file(FILE* file, int* L) {
 }
 
 
-void var_declaration_and_sort(int** Var, int** A, int* L, int Team) {
+void var_declaration(int** Var, int** A, int* L, int Team) {
 
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < Team; j++) {
@@ -190,6 +192,9 @@ void var_declaration_and_sort(int** Var, int** A, int* L, int Team) {
 		}
 	}
 
+}
+
+void sort_bubble(int** Var, int Team) {
 	int  x = 0, y = 0, z = 0, a = 0;
 	for (int ch = 1; ch == 1; ch = ch) {
 		ch = 0;
@@ -220,7 +225,6 @@ void var_declaration_and_sort(int** Var, int** A, int* L, int Team) {
 			Var[1][i] = Var[1][i - 1] + 1;
 		}
 	}
-
 }
 
 
