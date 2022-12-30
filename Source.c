@@ -20,10 +20,10 @@ void rate(int** Var, int Team); /*Вывод таблицы рейтинга*/
 int search_max(int** Var, int Team); /*Поиск команды с максимальным суммарным количеством очков*/
 int search_min(int** Var, int Team); /*Поиск команды с минимальным суммарным количеством очков*/
 
-int score_max(int** Var, int** A, int* L, int Team, int i); /*Поиск максимального количества очков у команды за одну игру*/
-int score_min(int** Var, int** A, int* L, int Team, int i); /*Поиск минимального количества очков у команды за одну игру*/
+int score_max(int** A, int* L, int Team, int i); /*Поиск максимального количества очков у команды за одну игру*/
+int score_min(int** A, int* L, int Team, int i); /*Поиск минимального количества очков у команды за одну игру*/
 
-void change_game(int** Var, int** A, int* L, int Team); /*Изменение значений очков за игру в ячейке*/ 
+void change_game(int** A, int* L, int Team); /*Изменение значений очков за игру в ячейке*/ 
 
 
 
@@ -42,23 +42,26 @@ void main()
 	FILE* file; /*Переменная читаемого файла*/
 	file = fopen("Kurs.txt", "r");  /*Открытие файла*/
 
-	printf("******************КЁРЛИНГ******************\n\n    Таблица результатов соревнований\n\nВведите количество команд (не более 9):");
+	printf("**************** Матяшов Максим Витальевич  бИСТ-224 ****************\n");
+	printf("  Реализация программы анализа результатов соревнований по кёрлингу  \n\n");
+	printf("Таблица результатов соревнований\n\nВведите количество команд(не более 9) :");
+
 	scanf("%i", &TEAM); /*Ввод количества участвующих команд*/
-	while (TEAM > 9 || TEAM < 2) {                              //
-		printf("Неверное значение! Попробуйте ещё раз.\n\n");   // /*Цикл для проверки введённого значения. Должно лежать в диапазоне от 2 до 9*/
-		printf("Введите количество команд(не более 9):");       //
-		scanf("%i", &TEAM);                                     //
+	while (TEAM > 9 || TEAM < 2) {   /*Цикл для проверки введённого значения. Должно лежать в диапазоне от 2 до 9*/
+		printf("Неверное значение! Попробуйте ещё раз.\n\n");   
+		printf("Введите количество команд(не более 9):");       
+		scanf("%i", &TEAM);                                     
 	}
 
-	Var = (int**)malloc(CATAGORY * sizeof(int*));    //
-	for (int i = 0; i < CATAGORY; i++)               //
-		Var[i] = (int*)malloc(TEAM * sizeof(int));   //
-                                                     //
-	A = (int**)malloc(TEAM * sizeof(int*));          // /*Выделение памяти под массивы*/
-	for (int i = 0; i < TEAM; i++)                   //
-		A[i] = (int*)malloc(TEAM * sizeof(int));     //
-                                                     //
-	L = (int*)malloc((86) * sizeof(int));            //
+	Var = (int**)malloc(CATAGORY * sizeof(int*));    /*Выделение памяти под массивы*/
+	for (int i = 0; i < CATAGORY; i++)               
+		Var[i] = (int*)malloc(TEAM * sizeof(int));   
+                                                     
+	A = (int**)malloc(TEAM * sizeof(int*));          
+	for (int i = 0; i < TEAM; i++)                   
+		A[i] = (int*)malloc(TEAM * sizeof(int));     
+                                                     
+	L = (int*)malloc((86) * sizeof(int));            
 
 	read_file(file, L); /*Чтение файла*/
 	var_declaration(Var, A, L, TEAM); /*Объявлениее переменных*/
@@ -117,14 +120,14 @@ void main()
 				system("cls"); /*Очищенние экрана*/
 				printf("Лучший результат\n\nПоиск по команде номер: ");
 				scanf("%i", &tm); /*Выбор команды*/
-				scr_max = score_max(Var, A, L, TEAM, tm-1);  /*Поиск и объявление значения наибольшего количеством очков команды за одну игру*/ 
+				scr_max = score_max(A, L, TEAM, tm-1);  /*Поиск и объявление значения наибольшего количеством очков команды за одну игру*/ 
 				printf("Лучший счёт команды %i: %i ", tm, scr_max);
 				break;
 			case 2:
 				system("cls"); /*Очищенние экрана*/
 				printf("Худший результат\n\nПоиск по команде номер : ");
 				scanf("%i", &tm); /*Выбор команды*/
-				scr_min = score_min(Var, A, L, TEAM, tm-1); /*Поиск и объявление значения наименьшего количеством очков команды за одну игру*/ 
+				scr_min = score_min(A, L, TEAM, tm-1); /*Поиск и объявление значения наименьшего количеством очков команды за одну игру*/ 
 				printf("Худший счёт команды %i: %i ", tm, scr_min);
 				break;
 			case 0:
@@ -137,7 +140,7 @@ void main()
 			break;
 		case 5:
 			system("cls"); /*Очищенние экрана*/
-			change_game(Var, A, L, TEAM); /*Изменение значений ячейки основной таблицы*/
+			change_game( A, L, TEAM); /*Изменение значений ячейки основной таблицы*/
 			var_declaration(Var, A, L, TEAM); /*Объявлениее переменных*/
 			sort_bubble(Var, TEAM); /*Сортировка переменных по рейтингу*/
 			break;
@@ -153,25 +156,25 @@ void main()
 
 
 /*Чтение значений из файла*/
-void read_file(FILE* file, int* L) {
+void read_file(FILE* file, int* L) {  
 	int i = 0; /*Переменная счётчик*/
-	while (fscanf(file, "%1i", &L[i]) != EOF) {   //
-		i++;                                      // /*Цикл до конца файла для записи значений из файла в массив*/
-	}                                             //
+	while (fscanf(file, "%1i", &L[i]) != EOF) {  /*Цикл до конца файла для записи значений из файла в массив*/ 
+		i++;                                      
+	}                                             
 }
 
 /*Объявление переменных на основе полученных данных*/
 void var_declaration(int** Var, int** A, int* L, int Team) {
 
-	for (int i = 0; i < 4; i++) {           //
-		for (int j = 0; j < Team; j++) {    //
-			Var[i][j] = 0;                  // /*Обнуление переменных массива*/
-		}                                   //
-	}                                       //
+	for (int i = 0; i < 4; i++) {           /*Обнуление переменных массива*/
+		for (int j = 0; j < Team; j++) {    
+			Var[i][j] = 0;                  
+		}                                   
+	}                                       
 
-	for (int j = 0; j < Team; j++) {        //
-		Var[4][j] = j + 1;                  // /*Объявление номеров команды для массива с переменными*/
-	}                                       //
+	for (int j = 0; j < Team; j++) {        /*Объявление номеров команды для массива с переменными*/
+		Var[4][j] = j + 1;                  
+	}                                       
 
 	int k = 0; /*Переменная счётчик*/
 	for (int i = 0; i < Team; i++) { /*Ход по вертикали*/
@@ -211,18 +214,18 @@ void sort_bubble(int** Var, int Team) {
 			/*Условие: "Если побед больше чем в следующей ячейке или победы равны, но очнов больше или победы и очки равны, но ничьи больше, то поменять команды местами"*/
 			if ((Var[2][i] > Var[2][i - 1]) || ((Var[2][i] == Var[2][i - 1]) && (Var[0][i] > Var[0][i - 1])) || ((Var[2][i] == Var[2][i - 1]) && (Var[0][i] == Var[0][i - 1])) && (Var[3][i] > Var[3][i - 1])) { 
 				ch = 1; /*Флаг наличия перестановок*/
-				x = Var[2][i];                //
-				Var[2][i] = Var[2][i - 1];    //
-				Var[2][i - 1] = x;            //
-				y = Var[4][i];                //
-				Var[4][i] = Var[4][i - 1];    //
-				Var[4][i - 1] = y;            // /*Сортировка всех критериев, кроме места*/
-				z = Var[3][i];                //
-				Var[3][i] = Var[3][i - 1];    //
-				Var[3][i - 1] = z;            //
-				a = Var[0][i];                //
-				Var[0][i] = Var[0][i - 1];    //
-				Var[0][i - 1] = a;            //
+				x = Var[2][i]; /*Сортировка всех критериев, кроме места*/
+				Var[2][i] = Var[2][i - 1];    
+				Var[2][i - 1] = x;            
+				y = Var[4][i];                
+				Var[4][i] = Var[4][i - 1];    
+				Var[4][i - 1] = y;             
+				z = Var[3][i];                
+				Var[3][i] = Var[3][i - 1];    
+				Var[3][i - 1] = z;            
+				a = Var[0][i];                
+				Var[0][i] = Var[0][i - 1];    
+				Var[0][i - 1] = a;            
 			}
 		}
 	}
@@ -303,7 +306,7 @@ int search_min(int** Var, int Team) {
 }
 
 /*Поиск максимального количества очков у команды за одну игру*/
-int score_max(int** Var, int** A, int* L,int Team, int i) {
+int score_max(int** A, int* L,int Team, int i) {
 	int max = 0; /*Переменная для сравнения счёта*/ 
 	for (int j = 0; j < Team; j++) { /*Цикл по количеству команд*/
 		if (i < j) { /*Условие:"Если верхний правый треугольник"*/
@@ -319,7 +322,7 @@ int score_max(int** Var, int** A, int* L,int Team, int i) {
 }
 
 /*Поиск минимального количества очков у команды за одну игру*/
-int score_min(int** Var, int** A, int* L, int Team, int i) {
+int score_min(int** A, int* L, int Team, int i) {
 	int min = 10; /*Переменная для сравнения счёта*/ 
 	for (int j = 0; j < Team; j++) { /*Цикл по количеству команд*/
 		if (i < j) { /*Условие:"Если верхний правый треугольник"*/
@@ -335,7 +338,7 @@ int score_min(int** Var, int** A, int* L, int Team, int i) {
 }
 
 /*Изменение значений очков за игру в ячейке*/
-void change_game(int** Var, int** A, int* L, int Team) {
+void change_game( int** A, int* L, int Team) {
 	int x = 0, y = 0; /*Переменные координат ячейки*/
 	int m, n;
 
