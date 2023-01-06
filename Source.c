@@ -67,7 +67,7 @@ void main()
 
 	read_file(file, N, NAME, TEAM); /*Чтение файла*/
 	var_declaration(Var, N, TEAM); /*Объявлениее переменных*/
-	sort_bubble(Var, NAME, TEAM); /*Сортировка переменных по рейтингу*/
+	sort_bubble(Var, TEAM); /*Сортировка переменных по рейтингу*/
 
 	system("cls"); /*Очищенние экрана*/
 	
@@ -150,7 +150,7 @@ void main()
 			system("cls"); /*Очищенние экрана*/
 			change_game( N,NAME, TEAM); /*Изменение значений ячейки основной таблицы*/
 			var_declaration(Var, N, TEAM); /*Объявлениее переменных*/
-			sort_bubble(Var, NAME, TEAM); /*Сортировка переменных по рейтингу*/
+			sort_bubble(Var, TEAM); /*Сортировка переменных по рейтингу*/
 			break;
 		default:
 			printf("Введён некорректный номер функции!\n\n");
@@ -209,7 +209,7 @@ void var_declaration(int** Var, int** N, int Team) {
 }
 
 /*Сортировка переменных по рейтингу*/
-void sort_bubble(int** Var, char** NAME, int Team) {
+void sort_bubble(int** Var, int Team) {
 	int ch = 1, x = 0, z = 0, a = 0, y = 0;
 	/*Обнуление переменных для сортировки*/
 	while (ch == 1) { /*Цикл пока не будет происходить перестановок*/
@@ -352,8 +352,6 @@ void change_game( int** N,char** NAME, int Team) {
 	j--; // 
 	i--; // /*Вычитание единицы для правильной работы с массивом*/
 
-	if (i < j) { /*Условие:"Если верхний правый треугольник"*/
 		N[i][j] = n; /*Задание нового значения для первой команды*/
 		N[j][i] = m; /*Задание нового значения для второй команды*/
-	}
 }
